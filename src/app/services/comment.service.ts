@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { Comment } from '../models/comment.model';
+import { delay } from 'rxjs/internal/operators/delay';
 
 @Injectable()
 export class CommentService {

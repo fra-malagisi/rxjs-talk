@@ -21,7 +21,7 @@ import { shareReplay } from 'rxjs/operators';
   styles: []
 })
 export class HomeComponent implements OnInit {
-  showBe = false;
+  showBe = true;
   showFe = false;
   postFrontEnd$: Observable<Post[]>;
   postBackEnd$: Observable<Post[]>;
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
     const posts$ = http$.pipe(
       tap(console.log),
       map(res => res),
-      shareReplay()
+      // shareReplay()
       );
 
     this.postBackEnd$ = posts$

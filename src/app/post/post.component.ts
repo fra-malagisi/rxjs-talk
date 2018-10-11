@@ -45,7 +45,6 @@ export class PostComponent implements OnInit, AfterViewInit {
   postId: string;
   post$: Observable<Post>;
   comments$: Observable<Comment[]>;
-  http$: Observable<Comment[]>;
   @ViewChild('searchInput') searchInput: ElementRef;
 
   constructor(
@@ -55,6 +54,7 @@ export class PostComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+
     this.postId = this.route.snapshot.params['id'];
 
     this.post$ = this.postservice.getPost(this.postId);
@@ -72,15 +72,9 @@ export class PostComponent implements OnInit, AfterViewInit {
   }
 
   loadComments(search = ''): Observable<Comment[]> {
-    const http$ = this.commentService.getCommentsByPostId(this.postId)
-    .pipe(
-      shareReplay()
-    );
-    const comments$ = http$
-      .pipe(
-        map(res => res),
-      );
-    return comments$
+    const http$ = this.commentService.getCommentsByPostId(this.postId);
+
+    return http$
     .pipe(
       map( comments => comments.filter(el => el.email.toUpperCase().indexOf(search) !== -1))
     );

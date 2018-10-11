@@ -5,7 +5,7 @@ import { filter } from 'rxjs/internal/operators/filter';
 import { PostService } from '../services/post.service';
 import { concatMap } from 'rxjs/internal/operators/concatMap';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
-import { fromEvent } from 'rxjs';
+import { fromEvent, of } from 'rxjs';
 import { exhaustMap, tap, map } from 'rxjs/operators';
 
 @Component({
