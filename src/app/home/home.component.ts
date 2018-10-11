@@ -1,54 +1,58 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { Developer } from '../models/developers.model';
-import { developers } from '../db/developers';
 import { tap } from 'rxjs/internal/operators/tap';
 import { map } from 'rxjs/internal/operators/map';
+import { DeveloperService } from '../services/developer.service';
+import { Post } from '../models/post.model';
+import { PostService } from '../services/post.service';
+import { shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
   template: `
   <div style="margin-top:20px">
-    <button type="button" class="btn btn-primary" (click)="toggle('junior')">Juniors</button>
-    <button type="button" class="btn btn-primary" style="margin-left:13px" (click)="toggle('senior')">Seniors</button>
+    <button type="button" class="btn btn-primary" (click)="toggle('be')">Back-End</button>
+    <button type="button" class="btn btn-primary" style="margin-left:13px" (click)="toggle('fe')">Front-End</button>
   </div>
-  <app-developers-list *ngIf="showJunior" [developers]="developersJunior$ | async"></app-developers-list>
-  <app-developers-list *ngIf="showSenior" [developers]="developersSenior$ | async"></app-developers-list>
+  <app-posts-list *ngIf="showBe" [posts]="postBackEnd$ | async"></app-posts-list>
+  <app-posts-list *ngIf="showFe" [posts]="postFrontEnd$ | async"></app-posts-list>
   `,
   styles: []
 })
 export class HomeComponent implements OnInit {
-  showJunior = false;
-  showSenior = false;
-  developersJunior$: Observable<Developer[]>;
-  developersSenior$: Observable<Developer[]>;
-  findLevel = (type: string) => map( (devs: Developer[]) => devs.filter(dev => dev.level === type));
+  showBe = false;
+  showFe = false;
+  postFrontEnd$: Observable<Post[]>;
+  postBackEnd$: Observable<Post[]>;
+  findPost = (type: string) => map( (posts: Post[]) => posts.filter( (post, i) => type === 'be' ? i % 2 === 0 : i % 2 !== 0));
 
-  constructor() { }
+  constructor(private postService: PostService) { }
 
   ngOnInit() {
 
-    const http$ = developers;
+    const http$ = this.postService.getPosts();
 
-    const developers$ = http$.pipe(
+    const posts$ = http$.pipe(
       tap(console.log),
-      map(res => res)
+      map(res => res),
+      shareReplay()
       );
 
-    this.developersJunior$ = developers$
+    this.postBackEnd$ = posts$
       .pipe(
-        this.findLevel('Junior')
+        this.findPost('be')
       );
 
-    this.developersSenior$ = developers$
+    this.postFrontEnd$ = posts$
       .pipe(
-        this.findLevel('Senior')
+        this.findPost('fe')
       );
   }
 
   toggle(type: string) {
-    this.showJunior = type === 'junior';
-    this.showSenior = type === 'senior';
+    this.showBe = type === 'be';
+    this.showFe = type === 'fe';
   }
 
 }

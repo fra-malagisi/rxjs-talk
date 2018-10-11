@@ -11,7 +11,7 @@ export class DeveloperService {
   getDevelopers(): Observable<Developer[]> {
     return developers
     .pipe(
-      delay(2000)
+      delay(1000)
     );
   }
 }
