@@ -72,8 +72,8 @@ export class PostComponent implements OnInit, AfterViewInit {
   }
 
   loadComments(search = ''): Observable<Comment[]> {
-    const http$ = this.commentService.getCommentsByPostId(this.postId);
-
+    const http$ = search === '' ?  this.commentService.getCommentsByPostId(this.postId) :
+            this.commentService.getCommentsByPostIdDelay(this.postId);
     return http$
     .pipe(
       map( comments => comments.filter(el => el.email.toUpperCase().indexOf(search) !== -1))
