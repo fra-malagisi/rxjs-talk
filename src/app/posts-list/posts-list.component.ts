@@ -33,7 +33,6 @@ export class PostsListComponent implements OnInit {
   ngOnInit() {
   }
   updateList(post: Post) {
-    console.log(post);
     this.posts.map( el => el.id === post.id ? el.body = post.body : el = el);
   }
 
