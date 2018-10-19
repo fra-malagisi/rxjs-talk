@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
 import { Post } from '../models/post.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { filter } from 'rxjs/internal/operators/filter';
@@ -10,39 +10,13 @@ import { exhaustMap, tap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-edit',
-  template: `
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{post.title}}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="form">
-        <div class="col-12 text-left">
-          <label><b>Post content</b></label>
-        </div>
-        <div class="col-12">
-          <textarea style="width:100%" rows="6" formControlName="body"></textarea>
-        </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" #saveButton>Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-`,
+  templateUrl: 'post-edit.component.html',
   styles: []
 })
-export class PostEditComponent implements OnInit, AfterViewInit {
+export class PostEditComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() post: Post;
+  @Input() index: number;
   @Output() postUpdated: EventEmitter<Post> = new EventEmitter;
 
   @ViewChild('saveButton') saveButton: ElementRef;
@@ -54,16 +28,10 @@ export class PostEditComponent implements OnInit, AfterViewInit {
     ) { }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      body: [this.post.body, Validators.required]
+    this.post = !this.post ? {} as Post : this.post;
+    this.form = this.form = this.fb.group({
+                body: [this.post.body, Validators.required]
     });
-
-    this.form.valueChanges
-      .pipe(
-        filter( () => this.form.valid),
-        concatMap(changes => this.postService.updatePost(this.post.id, changes))
-      )
-      .subscribe(post => this.postUpdated.emit(post));
   }
 
   ngAfterViewInit() {
@@ -73,5 +41,17 @@ export class PostEditComponent implements OnInit, AfterViewInit {
       )
       .subscribe();
   }
-
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.post.currentValue ) {
+      this.form = this.fb.group({
+        body: [this.post.body, Validators.required]
+      });
+      this.form.valueChanges
+        .pipe(
+          filter( () => this.form.valid),
+          concatMap(changes => this.postService.updatePost(this.post.id, changes))
+        )
+        .subscribe(post => this.postUpdated.emit(post));
+    }
+  }
 }

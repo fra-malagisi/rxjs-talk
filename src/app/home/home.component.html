@@ -1,0 +1,6 @@
+<div style="margin-top:20px">
+    <button type="button" class="btn btn-primary" (click)="toggle('be')">Back-End</button>
+    <button type="button" class="btn btn-primary" style="margin-left:13px" (click)="toggle('fe')">Front-End</button>
+  </div>
+  <app-posts-list *ngIf="showBe" [posts]="postBackEnd$ | async"></app-posts-list>
+  <app-posts-list *ngIf="showFe" [posts]="postFrontEnd$ | async"></app-posts-list>

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Post } from '../models/post.model';
 import { Observable } from 'rxjs/internal/Observable';
 import { delay } from 'rxjs/internal/operators/delay';
+import { map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -24,8 +25,10 @@ export class PostService {
         delay(2000)
       );
   }
-
   getPost(id: string): Observable<Post> {
     return this.http.get<Post>(`${this.url}/posts/${id}`);
+  }
+  findPost(type: string) {
+    return map( (posts: Post[]) => posts.filter( (post, i) => type === 'be' ? i % 2 === 0 : i % 2 !== 0));
   }
 }

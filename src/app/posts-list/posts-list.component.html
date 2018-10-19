@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col" *ngFor="let post of posts; let i = index;trackBy: trackByFn">
+      <div class="card" style="margin-top:20px;" >
+      <div class="card-header">
+        <b>{{post.title}}</b>
+      </div>
+        <div class="card-body">
+          {{post.body}}
+        </div>
+        <div class="card-footer text-center">
+        <div style="width:300px; margin-left:90px" class="text-center">
+            <button type="button" class="btn btn-primary" #buttonModal (click)="postSelected = post" data-toggle="modal" data-target="#exampleModal">Edit</button>
+            <button type="button" class="btn btn-success" [routerLink]="['/posts', post.id]" style="margin-left: 10px">View comments</button>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-post-edit (postUpdated)="updateList($event)" [post]="postSelected"></app-post-edit>

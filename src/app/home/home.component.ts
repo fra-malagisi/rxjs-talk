@@ -10,14 +10,7 @@ import { shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
-  template: `
-  <div style="margin-top:20px">
-    <button type="button" class="btn btn-primary" (click)="toggle('be')">Back-End</button>
-    <button type="button" class="btn btn-primary" style="margin-left:13px" (click)="toggle('fe')">Front-End</button>
-  </div>
-  <app-posts-list *ngIf="showBe" [posts]="postBackEnd$ | async"></app-posts-list>
-  <app-posts-list *ngIf="showFe" [posts]="postFrontEnd$ | async"></app-posts-list>
-  `,
+  templateUrl: './home.component.html',
   styles: []
 })
 export class HomeComponent implements OnInit {
@@ -25,7 +18,6 @@ export class HomeComponent implements OnInit {
   showFe = false;
   postFrontEnd$: Observable<Post[]>;
   postBackEnd$: Observable<Post[]>;
-  findPost = (type: string) => map( (posts: Post[]) => posts.filter( (post, i) => type === 'be' ? i % 2 === 0 : i % 2 !== 0));
 
   constructor(private postService: PostService) { }
 
@@ -35,18 +27,17 @@ export class HomeComponent implements OnInit {
 
     const posts$ = http$.pipe(
       tap(console.log),
-      map(res => res),
       // shareReplay()
       );
 
     this.postBackEnd$ = posts$
       .pipe(
-        this.findPost('be')
+        this.postService.findPost('be')
       );
 
     this.postFrontEnd$ = posts$
       .pipe(
-        this.findPost('fe')
+        this.postService.findPost('fe')
       );
   }
 

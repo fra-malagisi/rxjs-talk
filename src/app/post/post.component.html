@@ -1,0 +1,25 @@
+<div class="text-center" *ngIf="(post$ | async) as post">
+    <h2>{{post.title}}</h2>
+  </div>
+  <div class="row text-center">
+    <div class="col-12">
+      <label><b>Type your search</b></label>
+    </div>
+    <div class="col-12">
+      <input type="text" #searchInput>
+    </div>
+  </div>
+  <div *ngIf="(comments$ | async) as comments">
+  <div class="row" *ngFor="let comment of comments" >
+    <div class="col-12">
+      <div class="card" style="margin-top:20px;" >
+        <div class="card-header">
+          <b>{{comment.email}}</b>
+        </div>
+        <div class="card-body">
+          {{comment.body}}
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
